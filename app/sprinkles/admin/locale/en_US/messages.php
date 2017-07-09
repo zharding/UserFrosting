@@ -147,6 +147,7 @@ return [
         "LATEST"            => "Latest Users",
         "PAGE_DESCRIPTION"  => "A listing of the users for your site.  Provides management tools including the ability to edit user details, manually activate users, enable/disable users, and more.",
         "SUMMARY"           => "Account Summary",
+		"VERIFY"			=> "<strong>Verify new users email?</strong><br /><small class='text-muted'>If unchecked, an email to verify the users email address will not be sent out. You will have to manually set the users password and enable the account.</small>",
         "VIEW_ALL"          => "View all users",
         "WITH_PERMISSION"   => "Users with this permission"
     ],

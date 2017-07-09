@@ -71,7 +71,13 @@ class UserController extends SimpleController
         // Whitelist and set parameter defaults
         $transformer = new RequestDataTransformer($schema);
         $data = $transformer->transform($params);
-
+		
+		// Check if we are going to send a verification email or not. 
+		$verifyEmail = ($data['verify_email'] ? TRUE : FALSE);
+		
+		// To avoid any possible issue, we will unset the key 'verify_email prior to moving on. 
+		unset($data['verify_email']);
+		
         $error = false;
 
         // Validate request data
@@ -146,19 +152,22 @@ class UserController extends SimpleController
 
             // Try to generate a new password request
             $passwordRequest = $this->ci->repoPasswordReset->create($user, $config['password_reset.timeouts.create']);
+			
+			// If verification is requested, send the email to the user. 
+			if($verifyEmail){
+				// Create and send welcome email with password set link
+				$message = new TwigMailMessage($this->ci->view, 'mail/password-create.html.twig');
 
-            // Create and send welcome email with password set link
-            $message = new TwigMailMessage($this->ci->view, 'mail/password-create.html.twig');
-
-            $message->from($config['address_book.admin'])
-                    ->addEmailRecipient(new EmailRecipient($user->email, $user->full_name))
-                    ->addParams([
-                        'user' => $user,
-                        'create_password_expiration' => $config['password_reset.timeouts.create'] / 3600 . ' hours',
-                        'token' => $passwordRequest->getToken()
-                    ]);
-
-            $this->ci->mailer->send($message);
+				$message->from($config['address_book.admin'])
+						->addEmailRecipient(new EmailRecipient($user->email, $user->full_name))
+						->addParams([
+							'user' => $user,
+							'create_password_expiration' => $config['password_reset.timeouts.create'] / 3600 . ' hours',
+							'token' => $passwordRequest->getToken()
+						]);
+		
+				$this->ci->mailer->send($message);
+			}
 
             $ms->addMessageTranslated('success', 'USER.CREATED', $data);
         });

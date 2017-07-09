@@ -70,3 +70,5 @@ group_id:
       label: "&GROUP"
       domain: server
       message: VALIDATE.INTEGER
+verify_email:
+  default: 0
