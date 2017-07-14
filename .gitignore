@@ -58,5 +58,3 @@ public/css/min/*
 
 # Ignore personal config files (v0.3.x)
 app/config-userfrosting.php
-
-app/database/userfrosting.db
